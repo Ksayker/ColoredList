@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ColoredList</string>
+
+    <array name="color_pair_keys">
+        <item>red</item>
+        <item>orange</item>
+        <item>yellow</item>
+        <item>chartreuse</item>
+        <item>green</item>
+        <item>spring green</item>
+        <item>cyan</item>
+        <item>azure</item>
+        <item>blue</item>
+        <item>violet</item>
+    </array>
+</resources>
