@@ -19,16 +19,16 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
     private View.OnClickListener mListener;
     private Context mContext;
     /** key is color name*/
-    private String[] mColorKeys;
+    private String[] mColorNames;
     private int[] mColorsValues;
     private int mColorDefaultBackground;
     private boolean[] mSelectedItems;
 
-    public ColorAdapter(Context contexts, String[]colorKeys, int[] colorsValues, int colorDefaultBackground, View.OnClickListener listener, boolean[] selectedItems){
-        if (colorKeys.length != colorsValues.length){
+    public ColorAdapter(Context contexts, String[]colorNames, int[] colorsValues, int colorDefaultBackground, View.OnClickListener listener, boolean[] selectedItems){
+        if (colorNames.length != colorsValues.length){
             throw new IllegalStateException("colorNames and colorValues must be identical size.");
         }
-        mColorKeys = colorKeys;
+        mColorNames = colorNames;
         mColorsValues = colorsValues;
         mColorDefaultBackground = colorDefaultBackground;
         mListener = listener;
@@ -55,7 +55,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
 
     @Override
     public void onBindViewHolder(ColorViewHolder holder, int position) {
-        holder.mTvColorName.setText(mColorKeys[position]);
+        holder.mTvColorName.setText(mColorNames[position]);
 
         if (mSelectedItems[position]){
             holder.mCardView.setCardBackgroundColor(mColorsValues[position]);
@@ -70,7 +70,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
 
     @Override
     public int getItemCount() {
-        return mColorKeys.length;
+        return mColorNames.length;
     }
 
     class ColorViewHolder extends RecyclerView.ViewHolder{

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<colors>
+    <color name="red" color="#FFFF0000" />
+    <color name="orange" color="#FFFF7F00" />
+    <color name="yellow" color="#FFFFFF00" />
+    <color name="chartreuse" color="#FF7FFF00" />
+    <color name="green" color="#FF00FF00" />
+    <color name="spring green" color="#FF00FF7F" />
+    <color name="cyan" color="#FF00FFFF" />
+    <color name="azure" color="#FF007FFF" />
+    <color name="blue" color="#FF0000FF" />
+    <color name="violet" color="#FF7F00FF" />
+</colors>

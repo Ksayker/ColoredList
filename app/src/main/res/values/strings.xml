@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ColoredList</string>
 
-    <array name="color_pair_keys">
+    <array name="color_names">
         <item>red</item>
         <item>orange</item>
         <item>yellow</item>
