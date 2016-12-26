@@ -5,19 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.util.LinkedList;
 import java.util.List;
 
 import ksayker.coloredlist.R;
 import ksayker.coloredlist.adapters.ColorAdapter;
-import ksayker.coloredlist.listeners.ColorCardViewItemClickListener;
 import ksayker.coloredlist.parsers.XmlParser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private RecyclerView mRvColors;
     private RecyclerView.Adapter mColorsAdapter;
     private RecyclerView.LayoutManager mColorsLayoutManager;
@@ -26,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private int[] mColorValues;
     private String[] mColorNames;
     private int mColorDefaultBackground;
+
+    private int mPreviousIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData(){
+        mPreviousIndex = -1;
+
         XmlParser.ColorContainer colorContainer = new XmlParser().parseColors(getResources().getXml(R.xml.colors));
         mColorNames = new String[colorContainer.colorNames.size()];
         colorContainer.colorNames.toArray(mColorNames);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 mColorNames,
                 mColorValues,
                 mColorDefaultBackground,
-                new ColorCardViewItemClickListener(mRvColors, mSelectedItems),
+                this,
                 mSelectedItems
         );
 
@@ -75,5 +75,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return result;
+    }
+
+    @Override
+    public void onClick(View view) {
+        int itemIndex = mRvColors.getChildLayoutPosition(view);
+
+        if (mPreviousIndex != -1){
+            mSelectedItems[mPreviousIndex] = false;
+            mRvColors.getAdapter().notifyItemChanged(mPreviousIndex);
+        }
+        if (mPreviousIndex == itemIndex){
+            mSelectedItems[itemIndex] = false;
+            mRvColors.getAdapter().notifyItemChanged(itemIndex);
+            mPreviousIndex = -1;
+        } else {
+            mSelectedItems[itemIndex] = true;
+            mRvColors.getAdapter().notifyItemChanged(itemIndex);
+            mPreviousIndex = itemIndex;
+        }
     }
 }
