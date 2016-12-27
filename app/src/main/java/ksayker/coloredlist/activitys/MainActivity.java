@@ -7,10 +7,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ksayker.coloredlist.R;
 import ksayker.coloredlist.adapters.ColorAdapter;
+import ksayker.coloredlist.data.ItemColor;
 import ksayker.coloredlist.parsers.XmlParser;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -18,12 +21,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView.Adapter mColorsAdapter;
     private RecyclerView.LayoutManager mColorsLayoutManager;
 
-    private boolean[] mSelectedItems;
-    private int[] mColorValues;
-    private String[] mColorNames;
-    private int mColorDefaultBackground;
+    private ArrayList<ItemColor> mItemColors;
 
-    private int mPreviousIndex;
+    private int mColorDefaultBackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initData(){
-        mPreviousIndex = -1;
-
-        XmlParser.ColorContainer colorContainer = new XmlParser().parseColors(getResources().getXml(R.xml.colors));
-        mColorNames = new String[colorContainer.colorNames.size()];
-        colorContainer.colorNames.toArray(mColorNames);
-        mColorValues = convertListIntegerToArrayInt(colorContainer.colorValues);
-
-        mSelectedItems = new boolean[mColorNames.length];
+        mItemColors = new XmlParser().parseColors(getResources().getXml(R.xml.colors));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mColorDefaultBackground = getResources().getColor(R.color.color_card_view_default_color, getTheme());
@@ -56,43 +49,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mColorsLayoutManager = new LinearLayoutManager(this);
         mColorsAdapter = new ColorAdapter(
                 getApplicationContext(),
-                mColorNames,
-                mColorValues,
+                mItemColors,
                 mColorDefaultBackground,
-                this,
-                mSelectedItems
+                this
         );
 
         mRvColors.setLayoutManager(mColorsLayoutManager);
         mRvColors.setAdapter(mColorsAdapter);
     }
 
-    private int[] convertListIntegerToArrayInt(List<Integer> list){
-        int[] result = new int[list.size()];
-        int i = 0;
-        for (Integer value : list){
-            result[i++] = value;
-        }
-
-        return result;
-    }
-
     @Override
     public void onClick(View view) {
         int itemIndex = mRvColors.getChildLayoutPosition(view);
-
-        if (mPreviousIndex != -1){
-            mSelectedItems[mPreviousIndex] = false;
-            mRvColors.getAdapter().notifyItemChanged(mPreviousIndex);
-        }
-        if (mPreviousIndex == itemIndex){
-            mSelectedItems[itemIndex] = false;
-            mRvColors.getAdapter().notifyItemChanged(itemIndex);
-            mPreviousIndex = -1;
+        if (mItemColors.get(itemIndex).isSelected()){
+            mItemColors.get(itemIndex).setSelected(false);
         } else {
-            mSelectedItems[itemIndex] = true;
-            mRvColors.getAdapter().notifyItemChanged(itemIndex);
-            mPreviousIndex = itemIndex;
+            for (int i = 0; i < mItemColors.size(); i++) {
+                if (mItemColors.get(i).isSelected()){
+                    mItemColors.get(i).setSelected(false);
+                    break;
+                }
+            }
+            mItemColors.get(itemIndex).setSelected(true);
         }
+        mRvColors.getAdapter().notifyDataSetChanged();
     }
 }

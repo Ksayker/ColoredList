@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import ksayker.coloredlist.R;
+import ksayker.coloredlist.data.ItemColor;
 
 /**
  * @author ksayker
@@ -18,22 +21,16 @@ import ksayker.coloredlist.R;
 public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHolder> {
     private View.OnClickListener mListener;
     private Context mContext;
-    /** key is color name*/
-    private String[] mColorNames;
-    private int[] mColorsValues;
-    private int mColorDefaultBackground;
-    private boolean[] mSelectedItems;
 
-    public ColorAdapter(Context contexts, String[]colorNames, int[] colorsValues, int colorDefaultBackground, View.OnClickListener listener, boolean[] selectedItems){
-        if (colorNames.length != colorsValues.length){
-            throw new IllegalStateException("colorNames and colorValues must be identical size.");
-        }
-        mColorNames = colorNames;
-        mColorsValues = colorsValues;
+    private ArrayList<ItemColor> mItemColors;
+
+    private int mColorDefaultBackground;
+
+    public ColorAdapter(Context contexts, ArrayList<ItemColor> itemColors, int colorDefaultBackground, View.OnClickListener listener){
+        mContext = contexts;
+        mItemColors = itemColors;
         mColorDefaultBackground = colorDefaultBackground;
         mListener = listener;
-        mSelectedItems = selectedItems;
-        mContext = contexts;
     }
 
     private void changeSizeCardView(CardView cardView, float newSize){
@@ -55,22 +52,22 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
 
     @Override
     public void onBindViewHolder(ColorViewHolder holder, int position) {
-        holder.mTvColorName.setText(mColorNames[position]);
+        holder.mTvColorName.setText(mItemColors.get(position).getName());
 
-        if (mSelectedItems[position]){
-            holder.mCardView.setCardBackgroundColor(mColorsValues[position]);
+        if (mItemColors.get(position).isSelected()){
+            holder.mCardView.setCardBackgroundColor(mItemColors.get(position).getColor());
             holder.mTvColorName.setTextColor(mColorDefaultBackground);
             changeSizeCardView(holder.mCardView, mContext.getResources().getDimension(R.dimen.activity_main_size_selected_item));
         } else {
             holder.mCardView.setCardBackgroundColor(mColorDefaultBackground);
-            holder.mTvColorName.setTextColor(mColorsValues[position]);
+            holder.mTvColorName.setTextColor(mItemColors.get(position).getColor());
             changeSizeCardView(holder.mCardView, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
     @Override
     public int getItemCount() {
-        return mColorNames.length;
+        return mItemColors.size();
     }
 
     class ColorViewHolder extends RecyclerView.ViewHolder{
@@ -83,5 +80,4 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ColorViewHol
             mCardView = (CardView) itemView.findViewById(R.id.card_view_cv_color_item);
         }
     }
-
 }

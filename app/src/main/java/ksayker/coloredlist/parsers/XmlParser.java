@@ -6,8 +6,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import ksayker.coloredlist.data.ItemColor;
 
 /**
  * @author ksayker
@@ -20,8 +24,10 @@ public class XmlParser {
     private static final String KEY_ATTRIBUTE_COLOR_NAME = "name";
     private static final String KEY_ATTRIBUTE_COLOR_VALUE = "color";
 
-    public ColorContainer parseColors(XmlPullParser xmlPullParser){
-        ColorContainer colorContainer = new ColorContainer();
+    public ArrayList<ItemColor> parseColors(XmlPullParser xmlPullParser){
+        ArrayList<ItemColor> itemColors = new ArrayList<>();
+        String colorName = null;
+        int colorValue = Integer.MIN_VALUE;
         try {
             while (xmlPullParser.getEventType() != XmlPullParser.END_DOCUMENT){
                 switch (xmlPullParser.getEventType()){
@@ -30,17 +36,18 @@ public class XmlParser {
                             //read color name
                             for (int i = 0 , n = xmlPullParser.getAttributeCount(); i < n; i++) {
                                 if (xmlPullParser.getAttributeName(i).equals(KEY_ATTRIBUTE_COLOR_NAME)){
-                                    colorContainer.colorNames.add(xmlPullParser.getAttributeValue(i));
+                                    colorName = xmlPullParser.getAttributeValue(i);
                                     break;
                                 }
                             }
                             //read color value
                             for (int i = 0 , n = xmlPullParser.getAttributeCount(); i < n; i++) {
                                 if (xmlPullParser.getAttributeName(i).equals(KEY_ATTRIBUTE_COLOR_VALUE)){
-                                    colorContainer.colorValues.add(Color.parseColor(xmlPullParser.getAttributeValue(i)));
+                                    colorValue = Color.parseColor(xmlPullParser.getAttributeValue(i));
                                     break;
                                 }
                             }
+                            itemColors.add(new ItemColor(false, colorValue, colorName));
                         }
                         break;
                     default:
@@ -54,16 +61,6 @@ public class XmlParser {
             e.printStackTrace();
         }
 
-        return colorContainer;
-    }
-
-    public class ColorContainer{
-        public List<String> colorNames;
-        public List<Integer> colorValues;
-
-        public ColorContainer(){
-            colorNames = new LinkedList<>();
-            colorValues = new LinkedList<>();
-        }
+        return itemColors;
     }
 }
